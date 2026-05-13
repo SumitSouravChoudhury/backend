@@ -1,6 +1,8 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 
+const MOCK_DATA_PATH = path.join(__dirname, "../RestApi/MOCK_DATA.json");
 const users = require("../RestApi/MOCK_DATA.json");
 
 const PORT = 8000;
@@ -9,6 +11,27 @@ const app = express();
 
 // Middleware
 app.use(express.urlencoded({ extended: false }));
+
+app.use((req, res, next) => {
+  console.log("hello from Middleware 1");
+  req.myUsername = "Sumit";
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log("hello from Middleware 2", req.myUsername);
+  next();
+});
+
+app.use((req, res, next) => {
+  fs.appendFile(
+    "./Middlewares/logs.txt",
+    `${Date.now()}: ${req.method} ${req.path}\n`,
+    (err, data) => {
+      next();
+    },
+  );
+});
 
 // Routes
 app
@@ -27,7 +50,7 @@ app
 
     users[index] = { ...users[index], ...req.body };
 
-    fs.writeFile("./RestApi/MOCK_DATA.json", JSON.stringify(users), (err) => {
+    fs.writeFile(MOCK_DATA_PATH, JSON.stringify(users), (err) => {
       return res.json({ status: "success", user: users[index] });
     });
   })
@@ -39,7 +62,7 @@ app
 
     users.splice(index, 1);
 
-    fs.writeFile("./RestApi/MOCK_DATA.json", JSON.stringify(users), (err) => {
+    fs.writeFile(MOCK_DATA_PATH, JSON.stringify(users), (err) => {
       return res.json({ status: "success" });
     });
   });
@@ -64,13 +87,9 @@ app.post("/api/users", (req, res) => {
   const body = req.body;
   users.push({ ...body, id: users.length + 1 });
 
-  fs.writeFile(
-    "./RestApi/MOCK_DATA.json",
-    JSON.stringify(users),
-    (err, data) => {
-      return res.json({ status: "success", id: users.length });
-    },
-  );
+  fs.writeFile(MOCK_DATA_PATH, JSON.stringify(users), (err, data) => {
+    return res.json({ status: "success", id: users.length });
+  });
 });
 
 app.listen(PORT, () => {
