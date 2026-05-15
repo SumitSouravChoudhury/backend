@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const router = require("./routes/index");
 const { logReqres } = require("./middlewares/index");
@@ -11,7 +12,7 @@ const app = express();
 
 // Connection
 mongoose
-  .connect("mongodb://127.0.0.1:27017/backend-practice")
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB error:", err));
 
