@@ -17,6 +17,7 @@ mongoose
 
 // Middleware
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(logReqres(path.join(__dirname, "logs.txt")));
 
 // Routes

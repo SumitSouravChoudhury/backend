@@ -22,21 +22,21 @@ const handleCreateUser = async (req, res) => {
 
   if (
     !body ||
-    !body.first_name ||
-    !body.last_name ||
+    !body.firstName ||
+    !body.lastName ||
     !body.email ||
     !body.gender ||
-    !body.job_title
+    !body.jobTitle
   ) {
     return res.status(400).json({ msg: "All fields are required" });
   }
 
   const result = await User.create({
-    firstName: body.first_name,
-    lastName: body.last_name,
+    firstName: body.firstName,
+    lastName: body.lastName,
     email: body.email,
     gender: body.gender,
-    jobTitle: body.job_title,
+    jobTitle: body.jobTitle,
   });
 
   return res.status(201).json({ msg: "Success" });
@@ -49,13 +49,15 @@ const handleUpdateUserById = async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,
     {
-      firstName: body.first_name,
-      lastName: body.last_name,
-      email: body.email,
-      gender: body.gender,
-      jobTitle: body.job_title,
+      $set: {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        gender: body.gender,
+        jobTitle: body.jobTitle,
+      },
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 
   if (!user) return res.status(404).json({ status: "not found" });

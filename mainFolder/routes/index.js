@@ -14,7 +14,6 @@ const router = express.Router();
 
 // GET
 router.get("/api/users", handleGetAllUsers);
-
 router.get("/users", handleShowUsers);
 
 //POST
