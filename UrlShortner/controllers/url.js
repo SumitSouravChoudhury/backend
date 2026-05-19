@@ -11,7 +11,8 @@ const handleGenerateNewShortUrl = async (req, res) => {
     redirectUrl: body.url,
     visitHistory: [],
   });
-  return res.status(201).json({ id: shortId });
+
+  return res.render("home", { id: shortId });
 };
 
 const handleRedirectUrl = async (req, res) => {
@@ -19,7 +20,9 @@ const handleRedirectUrl = async (req, res) => {
   const entry = await Url.findOneAndUpdate(
     { shortId },
     { $push: { visitHistory: { timestamp: Date.now() } } },
+    { returnDocument: "before" },
   );
+  if (!entry) return res.status(404).json({ error: "Short URL not found" });
   res.redirect(entry.redirectUrl);
 };
 
