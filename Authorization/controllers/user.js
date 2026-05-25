@@ -37,7 +37,7 @@ const handleListUsers = async (req, res) => {
 };
 
 const handleListUserById = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.params.id;
 
   const user = await User.findById(userId);
 
@@ -46,9 +46,31 @@ const handleListUserById = async (req, res) => {
   return res.status(200).json({ user });
 };
 
+const handleUpdateUserById = async (req, res) => {
+  const body = req.body;
+
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        name: body.name,
+        email: body.email,
+        password: body.password,
+        role: body.role,
+      },
+    },
+    { returnDocument: "after" },
+  );
+
+  if (!user) return res.status(404).json({ error: "Not found" });
+
+  return res.status(200).json({ msg: "Updated successfully" });
+};
+
 module.exports = {
   handleUserSignup,
   handleUserLogin,
   handleListUsers,
   handleListUserById,
+  handleUpdateUserById,
 };
