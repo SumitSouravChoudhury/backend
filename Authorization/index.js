@@ -11,7 +11,6 @@ const { checkForAuthentication, restrictTo } = require("./middlewares/auth");
 const Url = require("./models/url");
 
 const app = express();
-
 const PORT = 8000;
 
 app.use(express.json());

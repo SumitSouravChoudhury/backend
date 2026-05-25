@@ -17,3 +17,5 @@ npm-debug.log*
 # Runtime
 pids/
 *.pid
+
+FileUpload/uploads/
